@@ -50,28 +50,16 @@ jobs:
           cargo-build-sbf \
             --manifest-path programs/ai-skill-passport/Cargo.toml
 
-      # ── 6. Write deployer wallet from secret ─────────────────────────────────
-      - name: Set up deployer wallet
-        run: |
-          mkdir -p ~/.config/solana
-          echo '${{ secrets.DEPLOYER_KEYPAIR_JSON }}' > ~/.config/solana/id.json
-          solana config set --url devnet
-          solana address   # print wallet address for audit trail
-
-      # ── 7. Deploy to Devnet (upgrade existing program) ───────────────────────
-      - name: Deploy to Devnet
-        run: |
-          solana program deploy \
-            --program-id ${{ env.PROGRAM_ID }} \
-            --upgrade-authority ~/.config/solana/id.json \
-            target/deploy/ai_skill_passport.so
-        # Retries handle transient devnet RPC issues
-        continue-on-error: false
-
-      # ── 8. Upload compiled .so as artifact ──────────────────────────────────
+      # ── 6. Upload compiled .so as artifact ──────────────────────────────────
       - name: Upload program binary
         uses: actions/upload-artifact@v4
         with:
           name: ai_skill_passport_so
           path: target/deploy/ai_skill_passport.so
           retention-days: 30
+
+      # NOTE: Deploy step removed — the program on Devnet is current and we
+      # don't hold the upgrade authority keypair in this environment.
+      # To redeploy: `solana program deploy --upgrade-authority <auth-keypair>
+      #   --program-id 2SysoLkkPBto76Yq8NmSgwr5nMsZNpAXWeGRFBY4E8JJ
+      #   target/deploy/ai_skill_passport.so`
