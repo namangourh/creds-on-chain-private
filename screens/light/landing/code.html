@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VeriSkill Protocol - Landing</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0A192F",
+            "background-light": "#FAFAFC",
+            "background-dark": "#101722",
+            "surface-glass": "rgba(255, 255, 255, 0.65)",
+            "text-main": "#111827",
+            "text-muted": "#64748B",
+            "accent": "#2563EB"
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"],
+            "body": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "md": "0.5rem",
+            "lg": "1.5rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          boxShadow: {
+            'glass': '0 20px 40px -10px rgba(10, 25, 47, 0.05)',
+            'btn-hover': '0 10px 25px -5px rgba(10, 25, 47, 0.2)'
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Base Styles */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: theme('colors.background-light');
+      color: theme('colors.text-main');
+    }
+
+    /* Mesh Gradient Background */
+    .bg-mesh {
+      background-color: #FAFAFC;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(215, 65%, 90%, 0.4) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(210, 80%, 95%, 0.6) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, hsla(215, 65%, 90%, 0.4) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(210, 80%, 95%, 0.6) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Glassmorphism Utilities */
+    .glass-panel {
+      background-color: theme('colors.surface-glass');
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: theme('boxShadow.glass');
+    }
+
+    /* Interactions */
+    .btn-scale {
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .btn-scale:hover {
+      transform: scale(1.02);
+      box-shadow: theme('boxShadow.btn-hover');
+    }
+
+    /* Loading Spinner Animation */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-custom {
+      animation: spin 1s linear infinite;
+    }
+    
+    /* Toast Animation */
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .toast-enter {
+      animation: slideInRight 0.3s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-mesh min-h-screen w-full flex flex-col relative overflow-x-hidden antialiased">
+<!-- Shared Component: TopNav (Included based on Relevance Test - Landing/Destination screen) -->
+<header class="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-10 py-3 z-50 glass-panel border-b-0 border-x-0 border-t-0 bg-white/40">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-primary text-xl font-bold leading-tight tracking-tight font-display">VeriSkill Protocol</h2>
+</div>
+<button aria-label="Toggle Theme" class="flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-white/50 text-primary border border-white/80 shadow-sm hover:bg-white/80 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 24px;">light_mode</span>
+</button>
+</header>
+<!-- Main Hero Section -->
+<main class="flex-grow flex items-center justify-center pt-16 px-4">
+<!-- Hero Glass Card -->
+<div class="glass-panel w-full max-w-[600px] rounded-lg p-10 flex flex-col items-center text-center relative z-10">
+<!-- Decorative Icon/Badge -->
+<div class="mb-8 p-4 rounded-full bg-primary/5 border border-primary/10 shadow-sm text-primary">
+<span class="material-symbols-outlined" style="font-size: 40px; font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<!-- Typography -->
+<h1 class="text-primary font-display text-5xl md:text-[64px] font-bold leading-[1.1] tracking-tight mb-6">
+        Verified AI<br/>Talent Signals
+      </h1>
+<p class="text-text-muted font-body text-lg leading-relaxed mb-10 max-w-[480px]">
+        Analyze your developer resume and GitHub profile to generate verified AI skill reports. Monetize your credentials with Solana micropayments.
+      </p>
+<!-- Connect Wallet Button Area -->
+<div class="w-full max-w-[320px] flex flex-col gap-4">
+<!-- Default State Button -->
+<button class="btn-scale flex w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-lg h-14 bg-primary text-white font-display text-[15px] font-bold tracking-wide shadow-md">
+<span class="material-symbols-outlined" style="font-size: 20px;">account_balance_wallet</span>
+           Connect Wallet
+        </button>
+<!-- Example Loading State Button (Hidden by default, shown here for completeness of states as per spec) -->
+<!-- 
+        <button class="flex w-full cursor-not-allowed items-center justify-center gap-3 overflow-hidden rounded-lg h-14 bg-primary/90 text-white/80 font-display text-[15px] font-bold tracking-wide shadow-md" disabled>
+           <svg class="animate-spin-custom h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+           Connecting...
+        </button>
+        -->
+<p class="text-xs text-text-muted/70 font-body mt-2">
+          Secure connection via Phantom or Solflare
+        </p>
+</div>
+</div>
+</main>
+<!-- Example Error Toast (Hidden by default) -->
+<!--
+  <div class="fixed top-20 right-4 z-50 glass-panel border-red-200/50 bg-red-50/80 px-4 py-3 rounded-md shadow-lg flex items-start gap-3 max-w-sm toast-enter">
+    <span class="material-symbols-outlined text-red-500 mt-0.5" style="font-variation-settings: 'FILL' 1;">error</span>
+    <div>
+      <h4 class="text-sm font-bold text-red-900 font-display">Connection Failed</h4>
+      <p class="text-xs text-red-700 mt-1 font-body">Please ensure your Phantom wallet is unlocked and try again.</p>
+    </div>
+    <button class="text-red-400 hover:text-red-600 ml-auto">
+      <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+    </button>
+  </div>
+  -->
+</body></html>

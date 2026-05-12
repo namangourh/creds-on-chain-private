@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VeriSkill Protocol - Locked Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&amp;family=Outfit:wght@400..700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#14f070",
+          "background-light": "#f6f8f7",
+          "background-dark": "#0D0E12",
+        },
+        fontFamily: {
+          "display": ["Space Grotesk", "sans-serif"],
+          "body": ["Outfit", "sans-serif"]
+        },
+        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+      },
+    },
+  }
+</script>
+<style>
+  :root {
+    --color-primary: #14F195;
+    --color-secondary: #9945FF;
+    --color-background: #0D0E12;
+    --color-surface: rgba(255, 255, 255, 0.03);
+    --color-border: rgba(255, 255, 255, 0.06);
+    --color-text: #F3F4F6;
+    --color-muted: #8B92A5;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Outfit', sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --blur-glass: blur(24px);
+    --shadow-neon: 0 0 32px rgba(20, 241, 149, 0.15);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: var(--font-display);
+  }
+
+  .glass-panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    backdrop-filter: var(--blur-glass);
+    -webkit-backdrop-filter: var(--blur-glass);
+  }
+
+  .heavy-blur-overlay {
+    background: rgba(13, 14, 18, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-button {
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    color: #FFFFFF;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  
+  .gradient-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .scrambled-text {
+    font-family: monospace;
+    color: var(--color-muted);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body class="antialiased overflow-x-hidden selection:bg-[#14F195] selection:text-[#0D0E12]">
+<!-- Top Navigation -->
+<div class="relative flex w-full flex-col bg-[#0D0E12] group/design-root overflow-x-hidden font-display z-50">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col w-full flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[rgba(255,255,255,0.06)] px-10 py-3 glass-panel fixed top-0 w-full h-[80px]">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-[#14F195]">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-[#F3F4F6] text-[20px] font-bold leading-tight tracking-[-0.015em]">VeriSkill Protocol</h2>
+</div>
+<div class="flex gap-4 items-center">
+<button class="flex w-12 h-6 cursor-pointer items-center justify-end overflow-hidden rounded-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] px-1">
+<div class="w-4 h-4 rounded-full bg-[#14F195]"></div>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent border border-[#14F195] text-[#14F195] text-[15px] font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Connect Wallet</span>
+</button>
+</div>
+</header>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center px-4 pt-32 pb-20 w-full max-w-[1200px] mx-auto relative z-10">
+<!-- Profile Header -->
+<div class="flex flex-col items-center mb-12 animate-fade-in-up">
+<div class="relative mb-6">
+<div class="w-[120px] h-[120px] rounded-full overflow-hidden border-4 border-[rgba(255,255,255,0.06)] shadow-lg bg-[rgba(255,255,255,0.05)] glass-panel">
+<img alt="Alex Chen" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlQL2_JUDp7vMHU5cOruXvlKgbJHfuoTbZdDqachY-mlnZp6nlENTeec5_LtQV6AamGep4Sy0ZsdSKaveU6VC1VVeI1HLZV55rIyRBKKWrTilrqT0tPGNey4hxMA-lbu2lcspt52NQBFezHdFZ-zzwWMQkLBh46UkNzSKfKLwamKZuyOK4p6Q63hafvJ3eg5bJb6ZHv5VAuRuYe0aDAtnN1bZFl24vakl1YpHg3xtKWVcyh_neVd3P67H2UFTLIamXAVjz6OvNZN8"/>
+</div>
+<div class="absolute bottom-1 right-1 w-5 h-5 bg-[#14F195] border-2 border-[#0D0E12] rounded-full"></div>
+</div>
+<h1 class="text-3xl md:text-4xl font-display font-bold text-[#F3F4F6] tracking-tight mb-2">Alex Chen</h1>
+<p class="text-lg text-[#8B92A5] font-body">Machine Learning Engineer</p>
+</div>
+<!-- Locked Content Card -->
+<div class="relative w-full max-w-[800px] rounded-[24px] overflow-hidden glass-panel min-h-[500px]">
+<!-- Underlying Content (Obscured) -->
+<div class="p-12 w-full h-full flex flex-col md:flex-row gap-10 opacity-30 select-none">
+<!-- Pseudo-Content Chart -->
+<div class="flex-1 aspect-square rounded-full border border-[rgba(255,255,255,0.05)] flex items-center justify-center relative">
+<div class="absolute inset-4 rounded-full border border-[rgba(153,69,255,0.1)]"></div>
+<div class="absolute inset-10 rounded-full border border-[rgba(20,241,149,0.1)]"></div>
+<div class="w-full h-px bg-[rgba(255,255,255,0.05)] absolute top-1/2 -translate-y-1/2"></div>
+<div class="h-full w-px bg-[rgba(255,255,255,0.05)] absolute left-1/2 -translate-x-1/2"></div>
+<svg class="w-full h-full opacity-20" viewbox="0 0 100 100">
+<polygon fill="rgba(153,69,255,0.1)" points="50,10 90,40 80,90 20,90 10,40" stroke="rgba(20,241,149,0.2)" stroke-width="1"></polygon>
+</svg>
+</div>
+<!-- Pseudo-Content List -->
+<div class="flex-1 flex flex-col gap-6 pt-4">
+<div class="w-full"><div class="h-4 w-1/3 bg-[rgba(255,255,255,0.05)] rounded-lg mb-2"></div><div class="h-8 w-full bg-[rgba(255,255,255,0.03)] rounded-lg border border-[rgba(255,255,255,0.05)]"></div></div>
+<div class="w-full"><div class="h-4 w-1/4 bg-[rgba(255,255,255,0.05)] rounded-lg mb-2"></div><div class="h-8 w-4/5 bg-[rgba(255,255,255,0.03)] rounded-lg border border-[rgba(255,255,255,0.05)]"></div></div>
+<div class="w-full"><div class="h-4 w-2/5 bg-[rgba(255,255,255,0.05)] rounded-lg mb-2"></div><div class="h-8 w-11/12 bg-[rgba(255,255,255,0.03)] rounded-lg border border-[rgba(255,255,255,0.05)]"></div></div>
+</div>
+</div>
+<!-- Heavy Blur Overlay & CTA -->
+<div class="absolute inset-0 heavy-blur-overlay z-20 flex flex-col items-center justify-center p-8 text-center">
+<div class="relative mb-8 group">
+<div class="absolute inset-0 bg-[#14F195] opacity-20 blur-xl rounded-full group-hover:opacity-40 transition-opacity"></div>
+<div class="relative size-16 rounded-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center text-[#14F195]">
+<span class="material-symbols-outlined text-[32px]">lock</span>
+</div>
+</div>
+<h2 class="font-display text-[28px] md:text-[32px] font-bold text-white mb-3 tracking-tight">Verified AI Skill Report</h2>
+<p class="text-[#8B92A5] text-[16px] max-w-[480px] mb-8 leading-relaxed">
+        Unlock Alex's cryptographic skill dossier, analyzed directly from real-world GitHub commits and technical implementations.
+      </p>
+<div class="w-full max-w-[340px] flex flex-col items-center">
+<button class="gradient-button flex items-center justify-center gap-3 h-[60px] px-10 rounded-[12px] font-display text-[18px] font-bold shadow-[var(--shadow-neon)] hover:shadow-lg w-full">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+          Unlock (0.01 SOL)
+        </button>
+<p class="mt-6 text-[10px] text-[rgba(139,146,165,0.6)] font-bold uppercase tracking-[0.2em] font-display">
+          Powered by VeriSkill Protocol
+        </p>
+</div>
+</div>
+</div>
+</main>
+<!-- Ambient Background Glows -->
+<div class="fixed top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-[rgba(20,241,149,0.03)] blur-[100px] pointer-events-none z-0"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-[rgba(153,69,255,0.03)] blur-[120px] pointer-events-none z-0"></div>
+</body></html>

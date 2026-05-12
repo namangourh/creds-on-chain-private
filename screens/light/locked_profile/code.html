@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VeriSkill - Locked Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#0d4aa5",
+          "background-light": "#FAFAFC",
+          "background-dark": "#101722",
+        },
+        fontFamily: {
+          "display": ["Inter"]
+        },
+        borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+      },
+    },
+  }
+</script>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-background-light);
+  }
+  .glass-surface {
+    background-color: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 20px 40px -10px rgba(10, 25, 47, 0.05);
+  }
+  .blur-overlay {
+    backdrop-filter: blur(16px);
+    background: linear-gradient(to bottom, rgba(250, 250, 252, 0.2), rgba(250, 250, 252, 0.8));
+  }
+  .cta-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .cta-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -12px rgba(10, 25, 47, 0.1);
+  }
+</style>
+</head>
+<body class="bg-background-light min-h-screen text-slate-900 overflow-x-hidden relative">
+<!-- Background Mesh Gradient Simulation -->
+<div class="fixed inset-0 pointer-events-none z-[-1]" style="background: radial-gradient(circle at top left, rgba(226, 232, 240, 0.4) 0%, transparent 40%), radial-gradient(circle at bottom right, rgba(226, 232, 240, 0.4) 0%, transparent 40%);"></div>
+<!-- Global Header (Minimal for Focused View) -->
+<header class="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-8 z-50 glass-surface border-b-0">
+<button class="flex items-center gap-2 text-primary font-bold transition-opacity hover:opacity-80">
+<span class="material-symbols-outlined text-xl">arrow_back</span>
+<span>Back</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined" data-icon="light_mode">light_mode</span>
+</button>
+</header>
+<!-- Main Layout -->
+<main class="pt-24 pb-16 px-4 md:px-8 flex justify-center w-full">
+<!-- 800px Centered Container -->
+<div class="w-full max-w-[800px] flex flex-col items-center">
+<!-- Profile Header -->
+<div class="flex flex-col items-center mb-12 animate-fade-in-up">
+<div class="relative mb-6">
+<div class="w-[120px] h-[120px] rounded-full overflow-hidden border-4 border-white shadow-lg bg-slate-200">
+<img alt="Professional headshot of a young male software engineer looking directly at the camera against a neutral grey background" class="w-full h-full object-cover" data-alt="Professional headshot of a young male software engineer looking directly at the camera against a neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlQL2_JUDp7vMHU5cOruXvlKgbJHfuoTbZdDqachY-mlnZp6nlENTeec5_LtQV6AamGep4Sy0ZsdSKaveU6VC1VVeI1HLZV55rIyRBKKWrTilrqT0tPGNey4hxMA-lbu2lcspt52NQBFezHdFZ-zzwWMQkLBh46UkNzSKfKLwamKZuyOK4p6Q63hafvJ3eg5bJb6ZHv5VAuRuYe0aDAtnN1bZFl24vakl1YpHg3xtKWVcyh_neVd3P67H2UFTLIamXAVjz6OvNZN8"/>
+</div>
+<!-- Online Indicator Placeholder -->
+<div class="absolute bottom-1 right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full"></div>
+</div>
+<h1 class="text-3xl font-bold text-slate-900 tracking-tight mb-2">Alex Chen</h1>
+<p class="text-lg text-slate-500 font-medium">Machine Learning Engineer</p>
+</div>
+<!-- Monetized Teaser Area -->
+<div class="relative w-full rounded-xl overflow-hidden glass-surface p-8 min-h-[500px]">
+<!-- Background Teaser Content (Obscured) -->
+<div class="w-full h-full flex flex-col md:flex-row gap-8 opacity-40">
+<!-- Fake Radar Chart -->
+<div class="flex-1 aspect-square rounded-full border-2 border-slate-200 flex items-center justify-center relative">
+<div class="absolute inset-4 rounded-full border border-slate-200"></div>
+<div class="absolute inset-10 rounded-full border border-slate-200"></div>
+<div class="w-full h-px bg-slate-200 absolute top-1/2 -translate-y-1/2"></div>
+<div class="h-full w-px bg-slate-200 absolute left-1/2 -translate-x-1/2"></div>
+</div>
+<!-- Fake Skill Metrics -->
+<div class="flex-1 flex flex-col gap-6 pt-4">
+<div class="w-full">
+<div class="h-4 w-1/3 bg-slate-300 rounded-lg mb-2"></div>
+<div class="h-8 w-full bg-slate-200 rounded-lg"></div>
+</div>
+<div class="w-full">
+<div class="h-4 w-1/4 bg-slate-300 rounded-lg mb-2"></div>
+<div class="h-8 w-4/5 bg-slate-200 rounded-lg"></div>
+</div>
+<div class="w-full">
+<div class="h-4 w-2/5 bg-slate-300 rounded-lg mb-2"></div>
+<div class="h-8 w-11/12 bg-slate-200 rounded-lg"></div>
+</div>
+</div>
+</div>
+<!-- Heavy Blur Overlay -->
+<div class="absolute inset-0 blur-overlay flex items-center justify-center p-4">
+<!-- Floating CTA Card -->
+<div class="bg-white rounded-xl p-8 max-w-md w-full text-center shadow-xl cta-card border border-slate-100 relative overflow-hidden group">
+<!-- Subtle top gradient accent -->
+<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-blue-400 opacity-80"></div>
+<div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="lock">lock</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 mb-3">Verified AI Skill Report</h2>
+<p class="text-slate-500 mb-8 px-4 leading-relaxed">
+            Unlock Alex's cryptographic skill dossier, analyzed directly from real-world GitHub commits and technical implementations.
+          </p>
+<button class="w-full h-12 bg-primary hover:bg-blue-800 text-white rounded-lg font-bold text-base transition-colors flex items-center justify-center gap-2 group-hover:shadow-md">
+<span class="material-symbols-outlined text-sm" data-icon="account_balance_wallet">account_balance_wallet</span>
+             Unlock (0.01 SOL)
+          </button>
+<p class="mt-4 text-xs text-slate-400 font-medium uppercase tracking-wider">Powered by VeriSkill Protocol</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

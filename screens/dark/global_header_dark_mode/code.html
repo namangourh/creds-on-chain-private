@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#121212",
+                        "neon-green": "#39ff14",
+                        "charcoal": "#1a1a1a"
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"],
+                        "grotesk": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glassmorphism {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-white antialiased">
+<!-- Header Section -->
+<header class="fixed top-0 left-0 right-0 z-50 glassmorphism border-b border-white/10 px-6 py-4">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<!-- Logo Section -->
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center size-10 rounded-lg bg-gradient-to-br from-primary to-orange-600 shadow-lg shadow-primary/20">
+<svg class="size-6 text-white" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h1 class="font-grotesk text-xl font-bold tracking-tight text-white">VeriSkill Protocol</h1>
+</div>
+<!-- Action Section -->
+<div class="flex items-center gap-6">
+<!-- Connect Wallet Button -->
+<button class="px-6 py-2 border-2 border-neon-green rounded-xl text-neon-green font-grotesk font-bold text-sm tracking-wide hover:bg-neon-green/10 transition-colors duration-200">
+                    Connect Wallet
+                </button>
+<!-- Theme Toggle & Profile -->
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center size-10 rounded-xl bg-white/5 border border-white/10 text-white/80 hover:text-white hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined" data-icon="Moon">moon_stars</span>
+</button>
+<div class="size-10 rounded-full border border-white/20 bg-cover bg-center" data-alt="Abstract vibrant gradient profile avatar with geometric patterns in deep purple and orange tones" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBqAzWY2pxehqfeSe-lW-KTqHRb-5dVvr2TLHuLRcsbaGlhlhn11zfP5d9mpMhGsQeGcrCWnkeSbqmqzFEfIGemZeGTkoSQ3cdFHmYXCXLHS0eFoXQk5oAxqURT97UnuMAFLws8BTFIn4uKpe98A5R9aJE_YfRqHYAUs2bVjbyvIBiRhXPqIP14AaRuvbUOsKRsrUQujNn4eKhGtkGi7GaZPtkn0v0kJCsWS0-qEgUrcT2bz5uIDbl3ZTAAG0rusvnAJCdWjDiKgzE')">
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Placeholder to show Header context -->
+<main class="pt-32 px-6 max-w-7xl mx-auto">
+<section class="h-[614px] rounded-3xl overflow-hidden relative border border-white/10">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10"></div>
+<div class="w-full h-full bg-cover bg-center" data-alt="Futuristic digital landscape with glowing data nodes and interconnected neural networks in a deep charcoal and neon orange color palette" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCWvHZZH2QAzB9vnvzM2jERoMJCcSPWhWnfgt6W5Tly3p2Z6UPuQK-peGnfj8tqEekGFvHE8LhYQv39VHsPWh8qYWjs-lrI9W3nbpT-hp2wPdTPJo1pBSJK-e4Z51QFYP4jlznlv-flpwMgCTkHc5f9fo-0gQaTeq0nFrmV7zJHrprA3DGGKAsiXhtqjuqUjNgElcK2kXxtunTjNhLSxnjm8nPXyddBqCa9ptnmoeEMTFDy8mQJUnQgiD-8cTVcQ63bM3Go0ILch20')">
+</div>
+<div class="absolute bottom-12 left-12 z-20 max-w-2xl">
+<h2 class="text-5xl font-grotesk font-bold mb-4">Decentralized Skill Verification</h2>
+<p class="text-xl text-white/60">The future of professional identity on the blockchain. Verifiable, immutable, and globally recognized.</p>
+</div>
+</section>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 py-20">
+<div class="p-8 rounded-2xl bg-white/5 border border-white/10">
+<span class="material-symbols-outlined text-primary mb-4" data-icon="security">security</span>
+<h3 class="text-xl font-bold mb-2">Immutable Proof</h3>
+<p class="text-white/40">Secured by cryptographic proofs that guarantee your achievements can never be forged or altered.</p>
+</div>
+<div class="p-8 rounded-2xl bg-white/5 border border-white/10">
+<span class="material-symbols-outlined text-neon-green mb-4" data-icon="hub">hub</span>
+<h3 class="text-xl font-bold mb-2">Global Network</h3>
+<p class="text-white/40">Connect with top-tier protocols and enterprises looking for verified talent across the globe.</p>
+</div>
+<div class="p-8 rounded-2xl bg-white/5 border border-white/10">
+<span class="material-symbols-outlined text-blue-400 mb-4" data-icon="account_balance_wallet">account_balance_wallet</span>
+<h3 class="text-xl font-bold mb-2">Wallet Integration</h3>
+<p class="text-white/40">Your skills follow you everywhere. Own your professional identity through your non-custodial wallet.</p>
+</div>
+</div>
+</main>
+</body></html>

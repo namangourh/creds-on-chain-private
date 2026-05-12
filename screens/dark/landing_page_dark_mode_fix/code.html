@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VeriSkill Protocol - Prove Your Skills On-Chain</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&amp;family=Space+Grotesk:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#14f070",
+                        "secondary": "#9945FF",
+                        "background-dark": "#0D0E12",
+                        "surface": "rgba(255, 255, 255, 0.03)",
+                        "border-glass": "rgba(255, 255, 255, 0.06)",
+                        "text-main": "#F3F4F6",
+                        "text-muted": "#8B92A5",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Outfit", "sans-serif"],
+                    },
+                    boxShadow: {
+                        "neon": "0 0 32px rgba(20, 240, 112, 0.15)",
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "md": "0.5rem",
+                        "lg": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0D0E12;
+            color: #F3F4F6;
+            font-family: theme('fontFamily.body');
+        }
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: theme('fontFamily.display');
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative overflow-x-hidden antialiased bg-background-dark text-text-main">
+<!-- Decorative Background Gradients -->
+<div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-secondary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- Global Header -->
+<header class="fixed top-0 left-0 w-full h-20 z-50 bg-background-dark/80 backdrop-blur-xl border-b border-border-glass flex items-center justify-between px-8">
+<div class="flex items-center gap-3 text-text-main font-display font-bold text-xl tracking-tight">
+<div class="w-6 h-6 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+            VeriSkill Protocol
+        </div>
+<div class="flex items-center gap-6">
+<!-- Theme Toggle -->
+<button aria-label="Toggle Theme" class="w-12 h-6 bg-surface rounded-full flex items-center p-1 border border-border-glass cursor-pointer hover:bg-white/10 transition-colors">
+<div class="w-5 h-5 rounded-full bg-text-main transform translate-x-5 transition-transform duration-200 shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-background-dark" data-icon="dark_mode">dark_mode</span>
+</div>
+</button>
+<!-- Wallet Button -->
+<button class="h-10 px-6 rounded-md border border-primary text-primary font-display font-semibold text-sm hover:bg-primary/10 transition-colors flex items-center justify-center">
+                Connect Wallet
+            </button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex items-center justify-center pt-20 px-4 relative z-10">
+<div class="max-w-[1200px] w-full flex flex-col items-center text-center gap-8 py-20">
+<!-- Hero Badge -->
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border-glass text-sm text-text-muted font-medium mb-4">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                Protocol v1.0 Live on Mainnet
+            </div>
+<!-- Headline -->
+<h1 class="font-display font-bold text-5xl md:text-6xl lg:text-[64px] leading-tight tracking-tight max-w-4xl mx-auto">
+<span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                    Prove Your Skills On-Chain.
+                </span>
+</h1>
+<!-- Subheadline -->
+<p class="text-text-muted text-lg md:text-xl max-w-[600px] mx-auto leading-relaxed">
+                AI analyzes your GitHub and resume to generate a decentralized, verifiable credential. Get paid when recruiters view your profile.
+            </p>
+<!-- Primary CTA -->
+<div class="mt-8 flex flex-col sm:flex-row items-center gap-4">
+<button class="h-14 px-8 w-full sm:w-[240px] rounded-md bg-primary text-background-dark font-display font-bold text-[15px] shadow-neon hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="account_balance_wallet">account_balance_wallet</span>
+                    Connect Wallet to Start
+                </button>
+</div>
+<!-- Trust Indicators / Small secondary info -->
+<div class="mt-16 pt-8 border-t border-border-glass w-full max-w-2xl flex flex-col items-center gap-4">
+<p class="text-xs text-text-muted font-display uppercase tracking-wider">Secured By</p>
+<div class="flex items-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-300">
+<span class="font-display font-bold text-xl">SOLANA</span>
+<span class="font-display font-bold text-xl">IPFS</span>
+<span class="font-display font-bold text-xl">ARWEAVE</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

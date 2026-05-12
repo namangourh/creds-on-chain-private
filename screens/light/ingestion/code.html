@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VeriSkill Protocol - Ingestion</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d4aa5",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background-light font-display relative overflow-x-hidden flex flex-col text-black/80">
+<!-- Background Glassmorphism Meshes -->
+<div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
+<!-- Minimal Back Header (Focused View) -->
+<header class="w-full flex items-center justify-between px-6 py-6 relative z-10 max-w-7xl mx-auto">
+<button class="flex items-center gap-2 text-black/60 hover:text-black transition-colors cursor-pointer group">
+<span class="material-symbols-outlined transition-transform group-hover:-translate-x-1" data-icon="arrow_back" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+<span class="font-medium text-sm tracking-wide">Back</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md border border-white/80 shadow-sm flex items-center justify-center text-black/60 hover:text-black transition-transform hover:scale-105 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="light_mode">light_mode</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 w-full max-w-6xl mx-auto px-6 py-4 flex flex-col justify-center relative z-10 pb-16">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch w-full">
+<!-- Left Column: Input Form (Glass Card) -->
+<div class="bg-white/60 backdrop-blur-xl border border-white p-8 lg:p-10 rounded-xl shadow-xl shadow-black/5 flex flex-col gap-8">
+<div class="flex flex-col gap-2">
+<h1 class="text-3xl font-bold tracking-tight text-black/90">Submit Credentials</h1>
+<p class="text-black/60 text-sm">Upload your data to generate a verified AI skill report.</p>
+</div>
+<!-- Dropzone -->
+<div class="relative group cursor-pointer mt-2">
+<div class="absolute inset-0 bg-white/40 rounded-lg transition-colors group-hover:bg-white/70"></div>
+<div class="relative flex flex-col items-center justify-center gap-4 border-2 border-dashed border-black/10 rounded-lg p-10 text-center transition-colors group-hover:border-primary/40 h-[220px]">
+<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-3xl" data-icon="upload_file">upload_file</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-black/80 font-semibold text-base">Upload Resume</p>
+<p class="text-sm text-black/50">Drag and drop your Resume (PDF) or click to browse</p>
+</div>
+</div>
+</div>
+<!-- GitHub Input -->
+<div class="flex flex-col gap-2 mt-2">
+<label class="text-sm font-semibold text-black/70">GitHub Handle</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/40 font-medium">@</span>
+<input class="w-full h-12 pl-10 pr-4 bg-black/5 border border-black/5 rounded-lg shadow-inner focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all text-black/80 placeholder-black/30 font-medium" placeholder="username" type="text"/>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="w-full h-12 bg-primary text-white rounded-lg font-bold tracking-wide shadow-md hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer">
+                    Generate Credential
+                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Right Column: Terminal Processing Panel -->
+<div class="bg-background-dark/95 backdrop-blur-2xl border border-white/10 p-8 lg:p-10 rounded-xl shadow-2xl flex flex-col gap-6 h-full min-h-[500px] relative overflow-hidden">
+<!-- Terminal Header -->
+<div class="flex items-center justify-between border-b border-white/10 pb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="terminal">terminal</span>
+<h2 class="text-white/90 font-medium tracking-wide">Analysis Protocol</h2>
+</div>
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-white/20"></div>
+<div class="w-3 h-3 rounded-full bg-white/20"></div>
+<div class="w-3 h-3 rounded-full bg-white/20"></div>
+</div>
+</div>
+<!-- Terminal Content / Logs -->
+<div class="flex-1 font-mono text-sm flex flex-col gap-3 relative z-10 pt-2">
+<div class="flex gap-4 opacity-40">
+<span class="text-white/40">[00:00:00]</span>
+<span class="text-white/80">System initialized. Awaiting credentials...</span>
+</div>
+<div class="flex gap-4 opacity-60">
+<span class="text-white/40">[00:00:01]</span>
+<span class="text-white/80">Establishing secure connection...</span>
+</div>
+<div class="flex gap-4 items-center mt-2">
+<span class="text-primary animate-pulse text-xs">▶</span>
+<span class="text-white font-medium">Ready for ingestion.</span>
+</div>
+</div>
+<!-- Decorative Processing Element / Watermark -->
+<div class="absolute right-0 bottom-0 opacity-5 pointer-events-none translate-x-1/4 translate-y-1/4">
+<span class="material-symbols-outlined" data-icon="memory" style="font-size: 240px;">memory</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

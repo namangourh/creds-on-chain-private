@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VeriSkill Protocol - Unlocked Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0d4aa5",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101722",
+            "text-main": "#111827",
+            "text-muted": "#64748B",
+            "success": "#10B981"
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          boxShadow: {
+            'glass': '0 20px 40px -10px rgba(13, 74, 165, 0.05)',
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 20px 40px -10px rgba(13, 74, 165, 0.05);
+    }
+    .glass-panel:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transition: background 0.3s ease;
+    }
+    body {
+      background-color: #FAFAFC;
+      background-image: radial-gradient(at 40% 20%, hsla(220,100%,74%,0.15) 0px, transparent 50%),
+                        radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
+                        radial-gradient(at 0% 50%, hsla(355,100%,93%,0.1) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+  </style>
+</head>
+<body class="font-display text-text-main antialiased min-h-screen relative overflow-x-hidden">
+<!-- Global Header (Shared Component TopNavBar) -->
+<div class="relative flex h-auto w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap px-10 py-3 rounded-2xl glass-panel mb-8 sticky top-4 z-50">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-text-main text-xl font-bold leading-tight tracking-[-0.015em]">VeriSkill Protocol</h2>
+</div>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 bg-white/50 text-text-main gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 hover:bg-white/80 transition-colors border border-white/60">
+<span class="material-symbols-outlined" data-icon="light_mode" data-size="20px">light_mode</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-col gap-8 w-full max-w-[1200px] mx-auto px-4 pb-20">
+<!-- Profile Header -->
+<section class="glass-panel rounded-2xl p-8 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-semibold bg-success/10 text-success border border-success/20">
+<span class="material-symbols-outlined text-[16px]" data-icon="verified">verified</span>
+                  Verified On-Chain
+                </span>
+</div>
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg shrink-0 bg-white relative">
+<img alt="Jane Doe Profile Picture" class="w-full h-full object-cover" data-alt="professional headshot of a young woman with glasses smiling subtly, warm studio lighting, neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_YS8uT3C4-F_t5OgSxbn4skoEfnRUx8J1azdIEyGKLMnxiRaoef6d1E_c2qNIQkR-gs9jZHDnHftcc_jLYs9aCPrM_5ZzOa4rHfE64mCtNTuuR2IStbO48y97lOBwS7dz5tTEnHWgFuMhc_xduEY-0Wh5Q46WCfQ9NIdR0-Q9EuQHc4nrIMLkXU1UHR2PGH6-JEzcgGA4bKUTgNEpUW3ZBfFx4IWMoPHJL-S2jsUcQdbOnau_JqXj68T_ZHl0X8SuNW6B9z5-njw"/>
+</div>
+<div class="flex flex-col text-center md:text-left pt-2">
+<h1 class="text-4xl font-bold text-text-main mb-2">Jane Doe</h1>
+<p class="text-xl text-primary font-medium mb-4">Senior AI &amp; Machine Learning Engineer</p>
+<div class="flex flex-wrap gap-3 justify-center md:justify-start">
+<div class="flex items-center gap-2 text-text-muted bg-white/50 px-3 py-1.5 rounded-lg border border-white/60">
+<span class="material-symbols-outlined text-[18px]" data-icon="work">work</span>
+<span>7 YOE</span>
+</div>
+<div class="flex items-center gap-2 text-text-muted bg-white/50 px-3 py-1.5 rounded-lg border border-white/60">
+<span class="material-symbols-outlined text-[18px]" data-icon="location_on">location_on</span>
+<span>San Francisco, CA</span>
+</div>
+<div class="flex items-center gap-2 text-text-muted bg-white/50 px-3 py-1.5 rounded-lg border border-white/60">
+<span class="material-symbols-outlined text-[18px]" data-icon="link">link</span>
+<span>github.com/janedoe-ai</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 2-Column Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-[450px_1fr] gap-8 items-start">
+<!-- Left Column: Radar Chart -->
+<section class="glass-panel rounded-2xl p-8 flex flex-col items-center justify-center h-full min-h-[500px] relative">
+<h3 class="text-lg font-bold text-text-main absolute top-8 left-8">AI Skill Distribution</h3>
+<p class="text-sm text-text-muted absolute top-14 left-8">VeriSkill Protocol Analysis</p>
+<!-- Simulated Radar Chart using SVG -->
+<div class="relative w-full max-w-[350px] aspect-square mt-10">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 100 100">
+<!-- Grid Background -->
+<polygon fill="none" points="50,5 95,35 77,85 23,85 5,35" stroke="#E2E8F0" stroke-width="0.5"></polygon>
+<polygon fill="none" points="50,15 85,40 71,80 29,80 15,40" stroke="#E2E8F0" stroke-width="0.5"></polygon>
+<polygon fill="none" points="50,25 75,45 65,75 35,75 25,45" stroke="#E2E8F0" stroke-width="0.5"></polygon>
+<polygon fill="none" points="50,35 65,50 59,70 41,70 35,50" stroke="#E2E8F0" stroke-width="0.5"></polygon>
+<!-- Axes -->
+<line stroke="#E2E8F0" stroke-width="0.5" x1="50" x2="50" y1="50" y2="5"></line>
+<line stroke="#E2E8F0" stroke-width="0.5" x1="50" x2="95" y1="50" y2="35"></line>
+<line stroke="#E2E8F0" stroke-width="0.5" x1="50" x2="77" y1="50" y2="85"></line>
+<line stroke="#E2E8F0" stroke-width="0.5" x1="50" x2="23" y1="50" y2="85"></line>
+<line stroke="#E2E8F0" stroke-width="0.5" x1="50" x2="5" y1="50" y2="35"></line>
+<!-- Data Polygon -->
+<!-- MLOps (top, 92%), Vision (top right, 85%), PyTorch (bottom right, 95%), Prompting (bottom left, 78%), NLP (top left, 96%) -->
+<!-- 50 - (45 * .92) = 8.6 (MLOps) -->
+<!-- 50 + (45 * .85) = 88.25, 50 - (15 * .85) = 37.25 (Vision) -->
+<!-- 50 + (27 * .95) = 75.65, 50 + (35 * .95) = 83.25 (PyTorch) -->
+<!-- 50 - (27 * .78) = 28.94, 50 + (35 * .78) = 77.3 (Prompting) -->
+<!-- 50 - (45 * .96) = 6.8, 50 - (15 * .96) = 35.6 (NLP) -->
+<polygon fill="#0d4aa5" fill-opacity="0.2" points="50,8.6 88.25,37.25 75.65,83.25 28.94,77.3 6.8,35.6" stroke="#0d4aa5" stroke-width="1.5"></polygon>
+<!-- Nodes -->
+<circle class="hover:r-3 cursor-pointer transition-all" cx="50" cy="8.6" fill="#0d4aa5" r="2"></circle>
+<circle class="hover:r-3 cursor-pointer transition-all" cx="88.25" cy="37.25" fill="#0d4aa5" r="2"></circle>
+<circle class="hover:r-3 cursor-pointer transition-all" cx="75.65" cy="83.25" fill="#0d4aa5" r="2"></circle>
+<circle class="hover:r-3 cursor-pointer transition-all" cx="28.94" cy="77.3" fill="#0d4aa5" r="2"></circle>
+<circle class="hover:r-3 cursor-pointer transition-all" cx="6.8" cy="35.6" fill="#0d4aa5" r="2"></circle>
+<!-- Labels -->
+<text fill="#111827" font-size="4" font-weight="bold" text-anchor="middle" x="50" y="-2">MLOps</text>
+<text fill="#111827" font-size="4" font-weight="bold" text-anchor="start" x="98" y="35">Vision</text>
+<text fill="#111827" font-size="4" font-weight="bold" text-anchor="middle" x="80" y="90">PyTorch</text>
+<text fill="#111827" font-size="4" font-weight="bold" text-anchor="middle" x="20" y="90">Prompting</text>
+<text fill="#111827" font-size="4" font-weight="bold" text-anchor="end" x="2" y="35">NLP</text>
+</svg>
+</div>
+</section>
+<!-- Right Column: Metric Cards -->
+<section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="glass-panel rounded-[1rem] p-6 flex flex-col justify-between min-h-[140px]">
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-medium text-sm tracking-wide uppercase">NLP Mastery</span>
+<span class="material-symbols-outlined text-primary" data-icon="translate">translate</span>
+</div>
+<div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-bold text-text-main">96</span>
+<span class="text-sm text-text-muted">/100</span>
+</div>
+<p class="text-xs text-text-muted mt-1">Top 2% of analyzed profiles</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-panel rounded-[1rem] p-6 flex flex-col justify-between min-h-[140px]">
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-medium text-sm tracking-wide uppercase">PyTorch Expert</span>
+<span class="material-symbols-outlined text-primary" data-icon="memory">memory</span>
+</div>
+<div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-bold text-text-main">95</span>
+<span class="text-sm text-text-muted">/100</span>
+</div>
+<p class="text-xs text-text-muted mt-1">Exceptional framework fluency</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel rounded-[1rem] p-6 flex flex-col justify-between min-h-[140px]">
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-medium text-sm tracking-wide uppercase">MLOps</span>
+<span class="material-symbols-outlined text-primary" data-icon="deployed_code">deployed_code</span>
+</div>
+<div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-bold text-text-main">92</span>
+<span class="text-sm text-text-muted">/100</span>
+</div>
+<p class="text-xs text-text-muted mt-1">Strong deployment patterns</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-panel rounded-[1rem] p-6 flex flex-col justify-between min-h-[140px]">
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-medium text-sm tracking-wide uppercase">Computer Vision</span>
+<span class="material-symbols-outlined text-primary" data-icon="visibility">visibility</span>
+</div>
+<div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-bold text-text-main">85</span>
+<span class="text-sm text-text-muted">/100</span>
+</div>
+<p class="text-xs text-text-muted mt-1">Solid theoretical foundation</p>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="glass-panel rounded-[1rem] p-6 flex flex-col justify-between min-h-[140px]">
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-medium text-sm tracking-wide uppercase">Prompt Engineering</span>
+<span class="material-symbols-outlined text-primary" data-icon="chat">chat</span>
+</div>
+<div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-bold text-text-main">78</span>
+<span class="text-sm text-text-muted">/100</span>
+</div>
+<p class="text-xs text-text-muted mt-1">Proficient instruction design</p>
+</div>
+</div>
+<!-- Summary Card -->
+<div class="glass-panel rounded-[1rem] p-6 flex flex-col justify-center items-center bg-primary/5 border-primary/20 min-h-[140px]">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary" data-icon="military_tech">military_tech</span>
+</div>
+<h4 class="text-lg font-bold text-text-main text-center">Elite Tier</h4>
+<p class="text-xs text-text-muted text-center mt-1">Overall Protocol Rating</p>
+</div>
+</section>
+</div>
+</main>
+</div>
+</div>
+</div>
+</div>
+</body></html>
