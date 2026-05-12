@@ -45,10 +45,10 @@ jobs:
       # ── 5. Build the program using cargo-build-sbf ───────────────────────────
       - name: Build Anchor program
         run: |
+          # Remove stale lockfile so cargo resolves fresh against updated features
+          rm -f programs/ai-skill-passport/Cargo.lock
           cargo-build-sbf \
             --manifest-path programs/ai-skill-passport/Cargo.toml
-        env:
-          RUSTFLAGS: ""
 
       # ── 6. Write deployer wallet from secret ─────────────────────────────────
       - name: Set up deployer wallet

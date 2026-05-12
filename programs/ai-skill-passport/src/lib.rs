@@ -1,14 +1,10 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program;
 use ephemeral_rollups_sdk::anchor::ephemeral;
-use ephemeral_rollups_sdk::cpi::delegate_account;
 use ephemeral_rollups_sdk::ephem::{commit_accounts, undelegate_accounts};
+use ephemeral_rollups_sdk::cpi::delegate_account;
 
 declare_id!("2SysoLkkPBto76Yq8NmSgwr5nMsZNpAXWeGRFBY4E8JJ");
-
-// ─── MagicBlock ER validator address (devnet) ─────────────────────────────────
-// Used in delegate_account to bind the Proof PDA to the ER validator.
-const ER_VALIDATOR: &str = "vALiD8nwEovnfqDWwJ2DaEHFMQFcwwNMrLEKgRHfhDz";
 
 #[program]
 pub mod ai_skill_passport {
@@ -27,8 +23,8 @@ pub mod ai_skill_passport {
     }
 
     /// Called by a viewer to pay SOL and unlock the full report.
-    /// Kept for backward-compatibility; private SPL payments go via the
-    /// MagicBlock Private Payments API (off-program route).
+    /// Kept for backward-compatibility; private SPL payments go via
+    /// the MagicBlock Private Payments API (off-program route).
     pub fn pay_to_unlock(ctx: Context<PayToUnlock>) -> Result<()> {
         let price = ctx.accounts.proof.price;
         let cpi_ctx = CpiContext::new(
@@ -42,14 +38,14 @@ pub mod ai_skill_passport {
         Ok(())
     }
 
-    // ─── Ephemeral Rollup lifecycle ─────────────────────────────────────────
+    // ─── MagicBlock Ephemeral Rollup lifecycle ───────────────────────────────
 
     /// Delegate the Proof PDA to the MagicBlock Ephemeral Rollup.
     /// After this call the account is managed by the ER validator until
     /// `undelegate_proof` is called or the ER session ends.
     #[ephemeral]
     pub fn delegate_proof(ctx: Context<DelegateProof>) -> Result<()> {
-        let pda_seeds: &[&[u8]] = &[
+        let seeds: &[&[u8]] = &[
             b"proof",
             ctx.accounts.proof.owner.as_ref(),
             &ctx.accounts.proof.nonce.to_le_bytes(),
@@ -64,7 +60,7 @@ pub mod ai_skill_passport {
             &ctx.accounts.delegation_metadata,
             &ctx.accounts.delegation_program,
             &ctx.accounts.system_program,
-            pda_seeds,
+            seeds,
             ctx.bumps["proof"],
             0,      // valid_until = 0 → no expiry
             30_000, // commit_frequency_ms = 30 s
@@ -73,7 +69,6 @@ pub mod ai_skill_passport {
     }
 
     /// Commit the current ER state to base-layer Devnet.
-    /// Can be called permissionlessly; settles any in-flight ER changes.
     pub fn commit_proof(ctx: Context<CommitProof>) -> Result<()> {
         commit_accounts(
             &ctx.accounts.owner,
@@ -85,7 +80,6 @@ pub mod ai_skill_passport {
     }
 
     /// Undelegate the Proof PDA back to base-layer Devnet.
-    /// Restores full on-chain access after an ER session.
     pub fn undelegate_proof(ctx: Context<UndelegateProof>) -> Result<()> {
         undelegate_accounts(
             &ctx.accounts.owner,
@@ -105,7 +99,6 @@ pub struct AddProof<'info> {
     #[account(
         init,
         payer = owner,
-        // Keep this explicit so account layout remains easy to audit across Rust/TS code.
         space = 8 + 32 + 32 + 8 + 8,
         seeds = [b"proof", owner.key().as_ref(), &nonce.to_le_bytes()],
         bump
@@ -119,7 +112,6 @@ pub struct AddProof<'info> {
 #[derive(Accounts)]
 pub struct PayToUnlock<'info> {
     #[account(
-        // Re-derive PDA from stored owner+nonce to bind payment to an existing proof record.
         seeds = [b"proof", proof.owner.as_ref(), &proof.nonce.to_le_bytes()],
         bump
     )]
@@ -166,7 +158,7 @@ pub struct CommitProof<'info> {
     pub proof: Account<'info, Proof>,
     #[account(mut)]
     pub owner: Signer<'info>,
-    /// CHECK: MagicBlock magic context
+    /// CHECK: MagicBlock magic context account
     #[account(mut)]
     pub magic_context: UncheckedAccount<'info>,
     /// CHECK: MagicBlock magic program
@@ -183,7 +175,7 @@ pub struct UndelegateProof<'info> {
     pub proof: Account<'info, Proof>,
     #[account(mut)]
     pub owner: Signer<'info>,
-    /// CHECK: MagicBlock magic context
+    /// CHECK: MagicBlock magic context account
     #[account(mut)]
     pub magic_context: UncheckedAccount<'info>,
     /// CHECK: MagicBlock magic program
