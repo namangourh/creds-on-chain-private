@@ -18,4 +18,7 @@ idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
 anchor-lang = { version = "0.32.0", features = ["init-if-needed"] }
-ephemeral-rollups-sdk = { version = "0.13.0", features = ["anchor"] }
+# NOTE: ephemeral-rollups-sdk >= 0.6 requires solana-program v2 which is
+# incompatible with anchor-lang 0.32 (uses solana-program v1). ER integration
+# is achieved at the frontend layer via getMagicRouterConnection().
+# To add on-chain ER hooks, upgrade anchor-lang to >=0.31 + solana-program v2.
