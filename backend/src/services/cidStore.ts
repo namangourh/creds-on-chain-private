@@ -1,5 +1,8 @@
 import { getPool } from "./db";
 
+// Table name for this project (private-fork; old 'proofs' table is left untouched)
+const TABLE = '"proofs-private"';
+
 interface ProofEntry {
   cid: string;
   nonce: number;
@@ -7,14 +10,15 @@ interface ProofEntry {
 
 export async function addProof(wallet: string, cid: string, nonce: number): Promise<void> {
   await getPool().query(
-    "INSERT INTO proofs (wallet, cid, nonce) VALUES ($1, $2, $3)",
+    `INSERT INTO ${TABLE} (wallet, cid, nonce) VALUES ($1, $2, $3)
+     ON CONFLICT (wallet, nonce) DO NOTHING`,
     [wallet, cid, nonce]
   );
 }
 
 export async function getLatestProof(wallet: string): Promise<ProofEntry | undefined> {
   const result = await getPool().query<ProofEntry>(
-    "SELECT cid, nonce FROM proofs WHERE LOWER(wallet) = LOWER($1) ORDER BY nonce DESC LIMIT 1",
+    `SELECT cid, nonce FROM ${TABLE} WHERE LOWER(wallet) = LOWER($1) ORDER BY nonce DESC LIMIT 1`,
     [wallet]
   );
   return result.rows[0];
@@ -22,7 +26,7 @@ export async function getLatestProof(wallet: string): Promise<ProofEntry | undef
 
 export async function getAllProofs(wallet: string): Promise<ProofEntry[]> {
   const result = await getPool().query<ProofEntry>(
-    "SELECT cid, nonce FROM proofs WHERE LOWER(wallet) = LOWER($1) ORDER BY nonce DESC",
+    `SELECT cid, nonce FROM ${TABLE} WHERE LOWER(wallet) = LOWER($1) ORDER BY nonce DESC`,
     [wallet]
   );
   return result.rows;
@@ -33,7 +37,7 @@ export async function getAllProofsByWallet(): Promise<{ wallet: string; cid: str
   // walk through nonces until they find one whose on-chain account still exists.
   const result = await getPool().query<{ wallet: string; cid: string; nonce: number }>(
     `SELECT wallet, cid, nonce
-     FROM proofs
+     FROM ${TABLE}
      ORDER BY wallet, nonce DESC
      LIMIT 500`
   );

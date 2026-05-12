@@ -145,7 +145,7 @@ export default function LandingPage() {
                   flexShrink: 0,
                 }}
               />
-              Powered by Solana + AI
+              Powered by Solana · MagicBlock · AI
             </div>
           </motion.div>
 
@@ -185,8 +185,8 @@ export default function LandingPage() {
             }}
           >
             Upload your resume or GitHub profile. AI extracts your creds,
-            anchors them permanently on Solana, and creates a shareable profile
-            that anyone can verify — instantly.
+            anchors them on Solana via MagicBlock Ephemeral Rollup, and creates
+            a shareable profile that anyone can unlock — privately.
           </motion.p>
 
           {/* CTA */}
@@ -258,7 +258,8 @@ export default function LandingPage() {
         >
           {[
             { label: 'Solana Devnet', icon: '⚡' },
-            { label: 'IPFS via Pinata', icon: '📌' },
+            { label: 'MagicBlock ER', icon: '🔒' },
+            { label: 'Private Payments', icon: '💳' },
             { label: 'QVAC Local AI', icon: '🧠' },
             { label: 'Multilingual', icon: '🌐' },
             { label: 'Open Source', icon: '🔓' },
@@ -284,13 +285,13 @@ export default function LandingPage() {
           },
           {
             icon: 'verified',
-            title: 'On-Chain Cred',
-            desc: 'SHA-256 hash of your cred report anchored on Solana. Tamper-proof forever.',
+            title: 'On-Chain Cred via MagicBlock ER',
+            desc: 'SHA-256 hash of your cred report anchored on Solana via MagicBlock Ephemeral Rollup — near-instant confirmation, base-layer security.',
           },
           {
-            icon: 'lock_open',
-            title: 'Pay-to-Unlock',
-            desc: 'Recruiters pay SOL to unlock your full cred report. You earn directly to your wallet.',
+            icon: 'lock',
+            title: 'Private Pay-to-Unlock',
+            desc: 'Recruiters pay USDC privately via the MagicBlock Private Ephemeral Rollup (PER). Your identity is shielded — no public on-chain link between payer and profile.',
           },
           {
             icon: 'translate',

@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getBrowseProfiles, searchProfiles } from '../lib/api';
-import { lamportsToSol } from '../lib/solana';
 import SkillTag from '../components/SkillTag';
 import { useTheme } from '../lib/theme';
 import type { BrowseProfile } from '../types';
@@ -131,7 +130,7 @@ function ProfileCard({ profile, isDark, score }: { profile: BrowseProfile; isDar
             Unlock Price
           </p>
           <p style={{ fontSize: '1rem', fontWeight: 700, color: primaryColor, margin: 0 }}>
-            {profile.price !== null ? `${lamportsToSol(profile.price)} SOL` : '—'}
+            {profile.price !== null ? `${(profile.price / 1_000_000).toFixed(2)} USDC` : '—'}
           </p>
         </div>
         <motion.button
@@ -230,7 +229,7 @@ export default function BrowsePage() {
             Browse <span className="gradient-text">Creds</span>
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '1rem', margin: 0 }}>
-            Verified on-chain credentials. Pay SOL to unlock the full report.
+            Verified on-chain credentials. Pay privately via MagicBlock PER to unlock the full report.
           </p>
         </motion.div>
 
