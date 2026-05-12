@@ -2,6 +2,7 @@ import {
   Connection,
   PublicKey,
   Transaction,
+  VersionedTransaction,
   TransactionInstruction,
   SystemProgram,
   LAMPORTS_PER_SOL,
@@ -145,6 +146,10 @@ export async function signAndSendViaMagicRouter(
  * Sign and send a pre-built transaction returned by the MagicBlock Private
  * Payments API (Tier 1 — private SPL unlock flow).
  *
+ * MagicBlock returns versioned (v0) transactions when legacy=false, which use
+ * Address Lookup Tables to fit privacy instructions within the 1232-byte limit.
+ * VersionedTransaction.deserialize() handles both legacy and v0 formats.
+ *
  * @param transactionBase64 - Base64-encoded unsigned transaction from the API
  * @param sendTo            - Where to submit: "base" (devnet) or "ephemeral" (ER)
  * @param sendTransaction   - Wallet adapter sendTransaction function
@@ -155,11 +160,13 @@ export async function sendAndConfirmBuiltTx(
   sendTo: 'base' | 'ephemeral',
   sendTransaction: WalletContextState['sendTransaction']
 ): Promise<string> {
-  // Decode base64 → Transaction
   const txBytes = Buffer.from(transactionBase64, 'base64');
-  const tx = Transaction.from(txBytes);
 
-  // Select the right RPC endpoint based on where the API says to send
+  // VersionedTransaction.deserialize handles both legacy and v0 tx formats.
+  // Transaction.from() only handles legacy — throws on v0 from MagicBlock API.
+  const tx = VersionedTransaction.deserialize(txBytes);
+
+  // Route to the right RPC: ER validator or Devnet base layer
   const rpcUrl =
     sendTo === 'ephemeral'
       ? import.meta.env.VITE_MAGICBLOCK_ER_URL || 'https://devnet-as.magicblock.app'
@@ -167,10 +174,10 @@ export async function sendAndConfirmBuiltTx(
 
   const connection = new Connection(rpcUrl, 'confirmed');
 
-  // sendTransaction handles signing via the connected wallet
+  // Wallet adapter signs and submits the versioned tx
   const sig = await sendTransaction(tx, connection);
 
-  // Wait for confirmation with a generous timeout for ER settlement
+  // Wait for confirmation
   await connection.confirmTransaction(
     { signature: sig, ...(await connection.getLatestBlockhash()) },
     'confirmed'

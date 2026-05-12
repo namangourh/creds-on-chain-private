@@ -54,7 +54,9 @@ export async function buildPrivateUnlockTx(params: {
     initIfMissing: true,          // Initialize transfer queue if not yet set up
     initAtasIfMissing: true,      // Create ATA for owner if missing
     initVaultIfMissing: true,
-    legacy: true,                 // Use legacy tx format for Phantom compatibility
+    // legacy: false → versioned (v0) transaction with Address Lookup Tables.
+    // Legacy txs are capped at 1232 bytes; PER privacy instructions push ~1316 bytes.
+    legacy: false,
     ...(refId ? { clientRefId: refId } : {}),
   };
 
