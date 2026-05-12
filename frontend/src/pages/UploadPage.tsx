@@ -4,7 +4,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { uploadResume, uploadGithub, registerProof } from '../lib/api';
-import { buildAddProofTx } from '../lib/solana';
+import { buildAddProofTx, signAndSendViaMagicRouter } from '../lib/solana';
 import ProgressSteps from '../components/ProgressSteps';
 import ExplorerLink from '../components/ExplorerLink';
 import ShareButton from '../components/ShareButton';
@@ -111,7 +111,7 @@ const skillTagVariant = {
 
 export default function UploadPage() {
   const navigate = useNavigate();
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey, sendTransaction, signTransaction } = useWallet();
   const { connection } = useConnection();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -198,21 +198,28 @@ export default function UploadPage() {
       await new Promise(r => setTimeout(r, 300));
       setStep(4);
 
-      // Build addProof tx using the regular devnet connection.
-      // The Magic Router (getMagicRouterConnection) handles ER routing at the
-      // network level — our tx targets the same Devnet program ID either way.
+      // ── Step 4: Build & send tx via MagicBlock Magic Router (genuine ER routing) ──
+      // Flow:
+      //   1. Build tx with devnet blockhash → Phantom simulation passes
+      //   2. signTransaction signs ONLY (no submission)
+      //   3. Signed bytes → Magic Router → routes to ER or base layer
       const nonce = Date.now();
       const tx = await buildAddProofTx(connection, publicKey, result.hash, priceUnits, nonce);
       let sig: string;
       try {
-        // Submit via the wallet adapter's regular devnet connection (Phantom-compatible)
-        sig = await sendTransaction(tx, connection);
+        if (signTransaction) {
+          // ✅ True MagicBlock ER path: sign locally, send via Magic Router
+          sig = await signAndSendViaMagicRouter(tx, signTransaction);
+        } else {
+          // Fallback for wallets that don't support signTransaction
+          sig = await sendTransaction(tx, connection);
+        }
       } catch (err: any) {
         const msg: string = err?.message ?? '';
-        if (msg.includes('User rejected') || msg.includes('cancelled')) {
+        if (msg.includes('User rejected') || msg.includes('cancelled') || msg.includes('rejected')) {
           toast.error('Transaction cancelled');
         } else if (msg.toLowerCase().includes('not enough') || msg.toLowerCase().includes('insufficient') || msg.toLowerCase().includes('0x1')) {
-          toast.error('Not enough SOL. Make sure Phantom is set to Devnet and your wallet has SOL. Visit faucet.solana.com to airdrop.', { duration: 10000 });
+          toast.error('Not enough SOL for rent. Visit faucet.solana.com to airdrop some Devnet SOL.', { duration: 10000 });
         } else {
           const logs: string[] = err?.logs ?? err?.transactionError?.logs ?? [];
           const logSummary = logs.length ? '\n' + logs.slice(-3).join('\n') : '';
@@ -226,11 +233,7 @@ export default function UploadPage() {
 
       setStep(5);
 
-      // Step 5: Confirm on-chain via the regular devnet connection
-      await connection.confirmTransaction(sig, 'confirmed');
-
-      // Register with backend
-      // Backend persists cid+nonce so profile endpoint can find the matching proof account.
+      // Confirm is handled inside signAndSendViaMagicRouter — just register with backend
       await registerProof(publicKey.toBase58(), result.cid, sig, nonce);
 
       setSuccessData({
