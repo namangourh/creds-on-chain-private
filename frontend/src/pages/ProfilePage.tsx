@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getProfile, unlockReport, fetchReport, getSupportedLanguages, translateSummary } from '../lib/api';
-import { buildPayToUnlockTx, lamportsToSol } from '../lib/solana';
+import { getProfile, buildUnlockTx, verifyUnlock, fetchReport, getSupportedLanguages, translateSummary } from '../lib/api';
+import { sendAndConfirmBuiltTx } from '../lib/solana';
 import { sha256Hex } from '../lib/hash';
 import SkillTag from '../components/SkillTag';
 import ScoreRing from '../components/ScoreRing';
@@ -209,6 +208,8 @@ export default function ProfilePage() {
   const { connection } = useConnection();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  // Suppress unused connection warning — kept for wallet adapter compatibility
+  void connection;
 
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -304,23 +305,31 @@ export default function ProfilePage() {
     }
     if (!profile || !walletAddress) return;
 
-    const balance = await connection.getBalance(publicKey);
-    // Keep a fee cushion to reduce false negatives from transaction fee variance.
-    if (balance < profile.price + 5000) {
-      toast.error(`Insufficient balance. Need ${lamportsToSol(profile.price + 5000)} SOL`);
-      return;
-    }
-
     setUnlocking(true);
     try {
-      const ownerPubkey = new PublicKey(walletAddress!);
-      const tx = await buildPayToUnlockTx(connection, publicKey, ownerPubkey, profile.nonce);
+      // ── Step 1: Build unsigned private SPL transfer tx via MagicBlock ────────
+      toast.loading('Building private payment…', { id: 'unlock' });
+      let txPayload;
+      try {
+        txPayload = await buildUnlockTx(publicKey.toBase58(), walletAddress);
+      } catch (err: any) {
+        toast.error(err?.response?.data?.error || 'Failed to build transaction', { id: 'unlock' });
+        setUnlocking(false);
+        return;
+      }
 
+      // ── Step 2: Wallet signs and submits the transaction ──────────────────
+      toast.loading('Sign the transaction in your wallet…', { id: 'unlock' });
       let sig: string;
       try {
-        sig = await sendTransaction(tx, connection);
+        sig = await sendAndConfirmBuiltTx(
+          txPayload.transactionBase64,
+          txPayload.sendTo,
+          sendTransaction
+        );
       } catch (err: any) {
-        if (err?.message?.includes('User rejected')) {
+        toast.dismiss('unlock');
+        if (err?.message?.includes('User rejected') || err?.message?.includes('cancelled')) {
           toast.error('Transaction cancelled');
         } else {
           toast.error('Transaction failed: ' + err?.message);
@@ -329,11 +338,19 @@ export default function ProfilePage() {
         return;
       }
 
-      await connection.confirmTransaction(sig, 'confirmed');
       setUnlockTxSig(sig);
+      toast.loading('Verifying private payment…', { id: 'unlock' });
 
-      // Backend verifies payment transfer and returns a short-lived CID-scoped token.
-      const { token } = await unlockReport(sig, publicKey.toBase58(), walletAddress);
+      // ── Step 3: Backend verifies SPL transfer and returns JWT ─────────────
+      const { token } = await verifyUnlock(
+        sig,
+        publicKey.toBase58(),
+        walletAddress,
+        txPayload.sendTo,
+        txPayload.amountUnits
+      );
+
+      toast.dismiss('unlock');
       saveUnlockToken(profile.cid, token);
       const report = await fetchReport(profile.cid, token);
 
@@ -345,7 +362,9 @@ export default function ProfilePage() {
 
       setFullReport(report);
       setUnlocked(true);
+      toast.success('🔒 Report unlocked via private payment!');
     } catch (err: any) {
+      toast.dismiss('unlock');
       toast.error(err?.response?.data?.error || err?.message || 'Unlock failed');
     } finally {
       setUnlocking(false);
@@ -498,8 +517,22 @@ export default function ProfilePage() {
                   <div style={{ textAlign: 'right' }}>
                     <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Unlock Price</p>
                     <p style={{ fontFamily: isDark ? '"Space Grotesk", sans-serif' : '"Inter", sans-serif', fontWeight: 700, fontSize: '1.25rem', color: primaryColor }}>
-                      {lamportsToSol(profile.price)} SOL
+                      {(profile.price / 1_000_000).toFixed(2)} USDC
                     </p>
+                    {/* MagicBlock Private Payment badge */}
+                    <div style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                      fontSize: '0.6875rem', fontWeight: 700,
+                      color: '#9945FF',
+                      border: '1px solid rgba(153,69,255,0.35)',
+                      borderRadius: '9999px',
+                      padding: '0.15rem 0.55rem',
+                      background: 'rgba(153,69,255,0.08)',
+                      marginTop: '0.375rem',
+                      letterSpacing: '0.03em',
+                    }}>
+                      <span style={{ fontSize: '11px' }}>🔒</span> Private · MagicBlock PER
+                    </div>
                   </div>
                 </motion.div>
 
@@ -555,7 +588,7 @@ export default function ProfilePage() {
                       ) : (
                         <>
                           <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>lock_open</span>
-                          Unlock Full Report ({lamportsToSol(profile.price)} SOL)
+                          Unlock Full Report ({(profile.price / 1_000_000).toFixed(2)} USDC)
                         </>
                       )}
                     </motion.button>
@@ -724,7 +757,24 @@ export default function ProfilePage() {
                   transition={{ duration: 0.4, delay: 0.5 }}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}
                 >
-                  {unlockTxSig && <ExplorerLink txSignature={unlockTxSig} label="View unlock tx →" />}
+                  {unlockTxSig && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                      <ExplorerLink txSignature={unlockTxSig} label="View unlock tx →" />
+                      {/* Privacy badge shown after unlock */}
+                      <div style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                        fontSize: '0.6875rem', fontWeight: 700,
+                        color: '#9945FF',
+                        border: '1px solid rgba(153,69,255,0.35)',
+                        borderRadius: '9999px',
+                        padding: '0.2rem 0.65rem',
+                        background: 'rgba(153,69,255,0.08)',
+                        width: 'fit-content',
+                      }}>
+                        🔒 Paid via MagicBlock Private Ephemeral Rollup
+                      </div>
+                    </div>
+                  )}
                   {isOwner && <ShareButton />}
                 </motion.div>
               </motion.div>

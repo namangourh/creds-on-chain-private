@@ -15,20 +15,21 @@ const api = axios.create({ baseURL: BASE });
 
 export async function uploadResume(
   file: File,
-  priceLamports: number
+  priceUnits: number
 ): Promise<{ skillReport: SkillReport; cid: string; hash: string }> {
   const form = new FormData();
   form.append('file', file);
-  form.append('priceLamports', String(priceLamports));
+  // Price is now stored as USDC micro-units (1_000_000 = 1 USDC) in the proof PDA
+  form.append('priceLamports', String(priceUnits));
   const { data } = await api.post('/api/upload', form);
   return data;
 }
 
 export async function uploadGithub(
   username: string,
-  priceLamports: number
+  priceUnits: number
 ): Promise<{ skillReport: SkillReport; cid: string; hash: string }> {
-  const { data } = await api.post('/api/upload', { githubUsername: username, priceLamports });
+  const { data } = await api.post('/api/upload', { githubUsername: username, priceLamports: priceUnits });
   return data;
 }
 
@@ -54,12 +55,48 @@ export async function getProfile(walletAddress: string): Promise<{
   return data;
 }
 
-export async function unlockReport(
-  txSignature: string,
+// ─── MagicBlock Private Unlock ───────────────────────────────────────────────
+
+export interface BuildUnlockTxResponse {
+  transactionBase64: string;
+  sendTo: 'base' | 'ephemeral';
+  recentBlockhash: string;
+  lastValidBlockHeight: number;
+  amountUnits: number;
+  mint: string;
+  decimals: number;
+}
+
+/**
+ * Step 1 of the private unlock flow:
+ * Backend calls MagicBlock Private Payments API and returns an unsigned SPL transfer tx.
+ */
+export async function buildUnlockTx(
   viewerWallet: string,
   ownerWallet: string
+): Promise<BuildUnlockTxResponse> {
+  const { data } = await api.post('/api/unlock/build-tx', { viewerWallet, ownerWallet });
+  return data;
+}
+
+/**
+ * Step 3 of the private unlock flow:
+ * Backend verifies the signed + submitted tx and returns a CID-scoped JWT.
+ */
+export async function verifyUnlock(
+  txSignature: string,
+  viewerWallet: string,
+  ownerWallet: string,
+  sendTo: 'base' | 'ephemeral',
+  amountUnits: number
 ): Promise<{ token: string }> {
-  const { data } = await api.post('/api/unlock', { txSignature, viewerWallet, ownerWallet });
+  const { data } = await api.post('/api/unlock/verify', {
+    txSignature,
+    viewerWallet,
+    ownerWallet,
+    sendTo,
+    amountUnits,
+  });
   return data;
 }
 

@@ -4,7 +4,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { uploadResume, uploadGithub, registerProof } from '../lib/api';
-import { buildAddProofTx, solToLamports } from '../lib/solana';
+import { buildAddProofTx, getMagicRouterConnection } from '../lib/solana';
 import ProgressSteps from '../components/ProgressSteps';
 import ExplorerLink from '../components/ExplorerLink';
 import ShareButton from '../components/ShareButton';
@@ -30,7 +30,7 @@ function seededRand(seed: number): number {
 
 // Cycling typewriter phrases shown during processing
 function TypewriterText() {
-  const phrases = ['Extracting skills…', 'Building your profile…', 'Almost there…', 'Anchoring to Solana…'];
+  const phrases = ['Extracting skills…', 'Building your profile…', 'Anchoring via MagicBlock ER…', '⚡ Near-instant on Solana…'];
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [visible, setVisible] = useState(true);
 
@@ -122,7 +122,7 @@ export default function UploadPage() {
   const [dragging, setDragging] = useState(false);
   const [justDropped, setJustDropped] = useState(false);
   const [githubUsername, setGithubUsername] = useState('');
-  const [priceSOL, setPriceSOL] = useState('0.01');
+  const [priceUSDC, setPriceUSDC] = useState('1.00');
   const [step, setStep] = useState(0);
   const [successData, setSuccessData] = useState<SuccessData | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -171,13 +171,13 @@ export default function UploadPage() {
       return;
     }
 
-    // Convert once and carry lamports end-to-end so tx and UI use the same value source.
-    const price = parseFloat(priceSOL);
-    if (isNaN(price) || price < 0) {
-      toast.error('Invalid price');
+    // Price stored as USDC micro-units (1 USDC = 1_000_000). Minimum 0.1 USDC.
+    const price = parseFloat(priceUSDC);
+    if (isNaN(price) || price < 0.1) {
+      toast.error('Minimum price is 0.10 USDC');
       return;
     }
-    const priceLamports = solToLamports(price);
+    const priceUnits = Math.round(price * 1_000_000);
 
     setView('processing');
     setStep(1);
@@ -190,21 +190,21 @@ export default function UploadPage() {
       // Steps 1-3: Upload to backend
       let result: { skillReport: SkillReport; cid: string; hash: string };
       if (tab === 'resume') {
-        result = await uploadResume(file!, priceLamports);
+        result = await uploadResume(file!, priceUnits);
       } else {
-        result = await uploadGithub(githubUsername.trim(), priceLamports);
+        result = await uploadGithub(githubUsername.trim(), priceUnits);
       }
       setStep(3);
       await new Promise(r => setTimeout(r, 300));
       setStep(4);
 
-      // Step 4: Wallet signature
-      // Date.now nonce gives practical uniqueness for PDA derivation in a hackathon context.
+      // Use the Magic Router connection for ER-accelerated registration (Tier 2 Core).
+      const erConnection = getMagicRouterConnection();
       const nonce = Date.now();
-      const tx = await buildAddProofTx(connection, publicKey, result.hash, priceLamports, nonce);
+      const tx = await buildAddProofTx(erConnection, publicKey, result.hash, priceUnits, nonce);
       let sig: string;
       try {
-        sig = await sendTransaction(tx, connection);
+        sig = await sendTransaction(tx, erConnection);
       } catch (err: any) {
         const msg: string = err?.message ?? '';
         if (msg.includes('User rejected') || msg.includes('cancelled')) {
@@ -224,9 +224,8 @@ export default function UploadPage() {
 
       setStep(5);
 
-      // Step 5: Confirm on-chain
-      // Wait for confirmation before register call so backend only records finalized intents.
-      await connection.confirmTransaction(sig, 'confirmed');
+      // Step 5: Confirm on-chain (via Magic Router, which settles ER → Devnet)
+      await erConnection.confirmTransaction(sig, 'confirmed');
 
       // Register with backend
       // Backend persists cid+nonce so profile endpoint can find the matching proof account.
@@ -446,13 +445,13 @@ export default function UploadPage() {
               {/* Price input */}
               <div style={{ marginBottom: '1.75rem' }}>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.5rem', color: 'var(--text-muted)' }}>
-                  Unlock Price (SOL)
+                  Unlock Price (USDC)
                 </label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   {/* Decrement */}
                   <motion.button
                     type="button"
-                    onClick={() => setPriceSOL(v => Math.max(0, parseFloat(v || '0') - 0.01).toFixed(3))}
+                    onClick={() => setPriceUSDC(v => Math.max(0.1, parseFloat(v || '0') - 0.5).toFixed(2))}
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.93 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 18 }}
@@ -484,8 +483,8 @@ export default function UploadPage() {
                       type="number"
                       min="0"
                       step="0.001"
-                      value={priceSOL}
-                      onChange={e => setPriceSOL(e.target.value)}
+                      value={priceUSDC}
+                      onChange={e => setPriceUSDC(e.target.value)}
                     />
                     <span
                       style={{
@@ -500,14 +499,14 @@ export default function UploadPage() {
                         pointerEvents: 'none',
                       }}
                     >
-                      SOL
+                      USDC
                     </span>
                   </div>
 
                   {/* Increment */}
                   <motion.button
                     type="button"
-                    onClick={() => setPriceSOL(v => (parseFloat(v || '0') + 0.01).toFixed(3))}
+                    onClick={() => setPriceUSDC(v => (parseFloat(v || '0') + 0.5).toFixed(2))}
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.93 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 18 }}
@@ -532,7 +531,7 @@ export default function UploadPage() {
                   </motion.button>
                 </div>
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.375rem' }}>
-                  Viewers will pay this amount to unlock your full report
+                  Viewers pay privately via MagicBlock PER to unlock your full report
                 </p>
               </div>
 
@@ -776,6 +775,19 @@ export default function UploadPage() {
           style={{ marginBottom: '1.5rem' }}
         >
           <ExplorerLink txSignature={data.txSignature} />
+          {/* MagicBlock ER badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+            fontSize: '0.75rem', fontWeight: 700,
+            color: '#14f070',
+            border: '1px solid rgba(20,241,112,0.3)',
+            borderRadius: '9999px',
+            padding: '0.25rem 0.75rem',
+            background: 'rgba(20,241,112,0.07)',
+            marginTop: '0.5rem',
+          }}>
+            ⚡ Registered via MagicBlock Ephemeral Rollup
+          </div>
         </motion.div>
 
         {/* Actions */}
