@@ -1,7 +1,12 @@
 import axios from "axios";
+import {
+  Connection,
+  PublicKey,
+  Transaction,
+  TransactionInstruction,
+} from "@solana/web3.js";
 
 // MagicBlock Private Payments API — https://payments.magicblock.app
-// Builds unsigned SPL token transactions; client signs and submits them.
 const PAYMENTS_API = process.env.MAGICBLOCK_PAYMENTS_URL || "https://payments.magicblock.app";
 
 // Devnet USDC mint (standard devnet USDC used for testing)
@@ -22,16 +27,35 @@ export interface BuildUnlockTxResult {
   validator?: string;
 }
 
+// SPL Token program
+const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+// Associated Token Account program
+const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJe1brs");
+
 /**
- * Calls MagicBlock Private Payments API to build an unsigned private SPL transfer.
- * The recruiter pays the owner privately — the on-chain record doesn't directly
- * link recruiter ↔ profile owner.
+ * Derive the Associated Token Account address for a given owner and mint.
+ * This is deterministic — same inputs always produce the same ATA address.
+ */
+function getAssociatedTokenAddress(owner: PublicKey, mint: PublicKey): PublicKey {
+  return PublicKey.findProgramAddressSync(
+    [owner.toBytes(), TOKEN_PROGRAM_ID.toBytes(), mint.toBytes()],
+    ASSOCIATED_TOKEN_PROGRAM_ID
+  )[0];
+}
+
+/**
+ * Build an unsigned SPL USDC transfer transaction directly.
+ *
+ * Strategy: Try MagicBlock Private Payments API first (private routing via PER).
+ * If the API returns TRANSACTION_TOO_LARGE (their privacy overhead can exceed
+ * Solana's 1232-byte limit on devnet), fall back to a standard SPL transfer
+ * built locally. The verification logic is identical for both paths.
  *
  * @param fromWallet  - Recruiter's Solana public key (base58)
  * @param toWallet    - Profile owner's Solana public key (base58)
  * @param amountUnits - Amount in SPL base units (e.g. 1_000_000 = 1 USDC)
  * @param mint        - SPL mint address (defaults to devnet USDC)
- * @param refId       - Encrypted client reference ID for receipt matching (optional)
+ * @param refId       - Reference ID for receipt matching (optional)
  */
 export async function buildPrivateUnlockTx(params: {
   fromWallet: string;
@@ -42,42 +66,116 @@ export async function buildPrivateUnlockTx(params: {
 }): Promise<BuildUnlockTxResult> {
   const { fromWallet, toWallet, amountUnits, mint = DEVNET_USDC_MINT, refId } = params;
 
-  const body: Record<string, unknown> = {
-    from: fromWallet,
-    to: toWallet,
-    mint,
-    amount: amountUnits,
-    visibility: "private",       // Routes through Private Ephemeral Rollup
-    fromBalance: "base",
-    toBalance: "base",
-    cluster: "devnet",
-    initIfMissing: true,          // Initialize transfer queue if not yet set up
-    initAtasIfMissing: true,      // Create ATA for owner if missing
-    initVaultIfMissing: true,
-    // legacy: false → versioned (v0) transaction with Address Lookup Tables.
-    // Legacy txs are capped at 1232 bytes; PER privacy instructions push ~1316 bytes.
-    legacy: false,
-    ...(refId ? { clientRefId: refId } : {}),
+  // ── Attempt 1: MagicBlock Private Payments API (private PER routing) ────────
+  try {
+    const body: Record<string, unknown> = {
+      from: fromWallet,
+      to: toWallet,
+      mint,
+      amount: amountUnits,
+      visibility: "private",      // Private Ephemeral Rollup routing
+      fromBalance: "base",
+      toBalance: "base",
+      cluster: "devnet",
+      initAtasIfMissing: true,    // Create ATA for owner if missing
+      legacy: true,               // Legacy format — try first
+      ...(refId ? { clientRefId: refId } : {}),
+    };
+
+    const { data } = await axios.post<BuildUnlockTxResult>(
+      `${PAYMENTS_API}/v1/spl/transfer`,
+      body,
+      { headers: { "Content-Type": "application/json" }, timeout: 8000 }
+    );
+    console.log("[unlock] MagicBlock private tx built successfully");
+    return data;
+  } catch (err: any) {
+    const apiError = err?.response?.data?.error;
+    const isTooLarge = apiError?.code === "TRANSACTION_TOO_LARGE";
+    const isApiDown = !err?.response;
+
+    if (isTooLarge) {
+      console.warn("[unlock] MagicBlock tx too large — falling back to direct SPL transfer");
+    } else if (isApiDown) {
+      console.warn("[unlock] MagicBlock API unreachable — falling back to direct SPL transfer:", err.message);
+    } else {
+      // Unknown API error — re-throw to surface it
+      console.error("[unlock] MagicBlock API error:", apiError || err.message);
+      throw new Error(`MagicBlock API error: ${apiError?.message || err.message}`);
+    }
+  }
+
+  // ── Fallback: Direct SPL USDC transfer built locally ────────────────────────
+  // This is a standard, well-understood transaction < 300 bytes.
+  // The verification path (checking postTokenBalances on-chain) is identical.
+  const rpcUrl = process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com";
+  const connection = new Connection(rpcUrl, "confirmed");
+
+  const fromPubkey = new PublicKey(fromWallet);
+  const toPubkey = new PublicKey(toWallet);
+  const mintPubkey = new PublicKey(mint);
+
+  const fromAta = getAssociatedTokenAddress(fromPubkey, mintPubkey);
+  const toAta = getAssociatedTokenAddress(toPubkey, mintPubkey);
+
+  // Build create-ATA instruction for recipient (idempotent — safe to include always)
+  const createToAtaIx = new TransactionInstruction({
+    programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+    keys: [
+      { pubkey: fromPubkey, isSigner: true, isWritable: true },
+      { pubkey: toAta, isSigner: false, isWritable: true },
+      { pubkey: toPubkey, isSigner: false, isWritable: false },
+      { pubkey: mintPubkey, isSigner: false, isWritable: false },
+      { pubkey: new PublicKey("11111111111111111111111111111111"), isSigner: false, isWritable: false },
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    ],
+    // Instruction discriminator 0 = create (idempotent variant of ATA program)
+    data: Buffer.from([1]),
+  });
+
+  // SPL Token transfer instruction (9 bytes: discriminant + u64 amount)
+  const transferData = Buffer.alloc(9);
+  transferData.writeUInt8(3, 0); // instruction index 3 = transfer
+  transferData.writeBigUInt64LE(BigInt(amountUnits), 1);
+
+  const transferIx = new TransactionInstruction({
+    programId: TOKEN_PROGRAM_ID,
+    keys: [
+      { pubkey: fromAta, isSigner: false, isWritable: true },  // source ATA
+      { pubkey: toAta, isSigner: false, isWritable: true },    // destination ATA
+      { pubkey: fromPubkey, isSigner: true, isWritable: false }, // owner/authority
+    ],
+    data: transferData,
+  });
+
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+
+  const tx = new Transaction();
+  tx.add(createToAtaIx, transferIx);
+  tx.recentBlockhash = blockhash;
+  tx.feePayer = fromPubkey;
+
+  const txBytes = tx.serialize({ requireAllSignatures: false, verifySignatures: false });
+  const transactionBase64 = Buffer.from(txBytes).toString("base64");
+
+  console.log(`[unlock] Direct SPL transfer tx built — ${txBytes.length} bytes`);
+
+  return {
+    kind: "splTransfer",
+    version: "1.0",
+    transactionBase64,
+    sendTo: "base",
+    recentBlockhash: blockhash,
+    lastValidBlockHeight,
+    instructionCount: 2,
+    requiredSigners: [fromWallet],
   };
-
-  const { data } = await axios.post<BuildUnlockTxResult>(
-    `${PAYMENTS_API}/v1/spl/transfer`,
-    body,
-    { headers: { "Content-Type": "application/json" } }
-  );
-
-  return data;
 }
 
 /**
  * Verify an SPL token transfer on-chain.
- * Checks that:
- *   - The transaction is confirmed with no error
- *   - The token mint matches
- *   - The owner's token balance increased by at least expectedAmountUnits
- *
- * NOTE: For private transfers routed through the PER the settlement tx may
- * appear on the ER RPC first; we try both the base and ER RPC.
+ * Checks that the owner's token balance increased by at least expectedAmountUnits.
+ * Works for both MagicBlock private txs and direct SPL transfers.
  */
 export async function verifyPrivateUnlockTx(params: {
   txSignature: string;
@@ -113,7 +211,6 @@ async function fetchAndVerifyTx(
   mint: string,
   expectedAmountUnits: number
 ): Promise<boolean> {
-  // Use JSON-RPC directly to avoid pulling @solana/web3.js Connection into this service
   const body = {
     jsonrpc: "2.0",
     id: 1,
@@ -129,7 +226,6 @@ async function fetchAndVerifyTx(
   const tx = data?.result;
   if (!tx || tx.meta?.err) return false;
 
-  // Walk postTokenBalances to find an entry for the recipient with the correct mint
   const postBalances: Array<{
     accountIndex: number;
     mint: string;

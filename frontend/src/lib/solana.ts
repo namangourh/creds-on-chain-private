@@ -162,9 +162,14 @@ export async function sendAndConfirmBuiltTx(
 ): Promise<string> {
   const txBytes = Buffer.from(transactionBase64, 'base64');
 
-  // VersionedTransaction.deserialize handles both legacy and v0 tx formats.
-  // Transaction.from() only handles legacy — throws on v0 from MagicBlock API.
-  const tx = VersionedTransaction.deserialize(txBytes);
+  // Try versioned (v0) first — MagicBlock returns v0 with ALTs.
+  // Fall back to legacy Transaction.from() for our direct SPL transfer fallback.
+  let tx: VersionedTransaction | Transaction;
+  try {
+    tx = VersionedTransaction.deserialize(txBytes);
+  } catch {
+    tx = Transaction.from(txBytes);
+  }
 
   // Route to the right RPC: ER validator or Devnet base layer
   const rpcUrl =
