@@ -1,0 +1,77 @@
+name: Build & Deploy Anchor Program
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'programs/**'
+      - 'Anchor.toml'
+  workflow_dispatch:   # allow manual trigger from GitHub UI
+
+env:
+  PROGRAM_ID: 2SysoLkkPBto76Yq8NmSgwr5nMsZNpAXWeGRFBY4E8JJ
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to Devnet
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - uses: actions/checkout@v4
+
+      # ── 2. Rust toolchain (stable) ───────────────────────────────────────────
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      # ── 3. Cache Cargo registry + build artifacts ────────────────────────────
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            programs/ai-skill-passport/target
+          key: cargo-${{ runner.os }}-${{ hashFiles('programs/ai-skill-passport/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      # ── 4. Install Solana CLI (includes cargo-build-sbf) ────────────────────
+      - name: Install Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      # ── 5. Build the program using cargo-build-sbf ───────────────────────────
+      - name: Build Anchor program
+        run: |
+          cargo-build-sbf \
+            --manifest-path programs/ai-skill-passport/Cargo.toml
+        env:
+          RUSTFLAGS: ""
+
+      # ── 6. Write deployer wallet from secret ─────────────────────────────────
+      - name: Set up deployer wallet
+        run: |
+          mkdir -p ~/.config/solana
+          echo '${{ secrets.DEPLOYER_KEYPAIR_JSON }}' > ~/.config/solana/id.json
+          solana config set --url devnet
+          solana address   # print wallet address for audit trail
+
+      # ── 7. Deploy to Devnet (upgrade existing program) ───────────────────────
+      - name: Deploy to Devnet
+        run: |
+          solana program deploy \
+            --program-id ${{ env.PROGRAM_ID }} \
+            --upgrade-authority ~/.config/solana/id.json \
+            target/deploy/ai_skill_passport.so
+        # Retries handle transient devnet RPC issues
+        continue-on-error: false
+
+      # ── 8. Upload compiled .so as artifact ──────────────────────────────────
+      - name: Upload program binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai_skill_passport_so
+          path: target/deploy/ai_skill_passport.so
+          retention-days: 30

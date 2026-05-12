@@ -18,3 +18,4 @@ idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
 anchor-lang = { version = "0.32.0", features = ["init-if-needed"] }
+ephemeral-rollups-sdk = { version = "0.13.0", features = ["spl"] }
