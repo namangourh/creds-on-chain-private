@@ -57,9 +57,6 @@ export async function buildAddProofTx(
   priceLamports: number,
   nonce: number
 ): Promise<Transaction> {
-  // Use Magic Router for ER-accelerated registration
-  const erConnection = getMagicRouterConnection();
-
   const programId = getProgramId();
   const [proofPDA] = getProofPDA(owner, nonce);
 
@@ -91,8 +88,8 @@ export async function buildAddProofTx(
   const tx = new Transaction();
   tx.add(ix);
   tx.feePayer = owner;
-  // Fetch blockhash from Magic Router so it's valid for the ER
-  tx.recentBlockhash = (await erConnection.getLatestBlockhash()).blockhash;
+  // Use the passed connection's blockhash — must match the RPC the wallet will submit to.
+  tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
   return tx;
 }
 

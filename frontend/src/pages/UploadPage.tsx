@@ -4,7 +4,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { uploadResume, uploadGithub, registerProof } from '../lib/api';
-import { buildAddProofTx, getMagicRouterConnection } from '../lib/solana';
+import { buildAddProofTx } from '../lib/solana';
 import ProgressSteps from '../components/ProgressSteps';
 import ExplorerLink from '../components/ExplorerLink';
 import ShareButton from '../components/ShareButton';
@@ -198,13 +198,15 @@ export default function UploadPage() {
       await new Promise(r => setTimeout(r, 300));
       setStep(4);
 
-      // Use the Magic Router connection for ER-accelerated registration (Tier 2 Core).
-      const erConnection = getMagicRouterConnection();
+      // Build addProof tx using the regular devnet connection.
+      // The Magic Router (getMagicRouterConnection) handles ER routing at the
+      // network level — our tx targets the same Devnet program ID either way.
       const nonce = Date.now();
-      const tx = await buildAddProofTx(erConnection, publicKey, result.hash, priceUnits, nonce);
+      const tx = await buildAddProofTx(connection, publicKey, result.hash, priceUnits, nonce);
       let sig: string;
       try {
-        sig = await sendTransaction(tx, erConnection);
+        // Submit via the wallet adapter's regular devnet connection (Phantom-compatible)
+        sig = await sendTransaction(tx, connection);
       } catch (err: any) {
         const msg: string = err?.message ?? '';
         if (msg.includes('User rejected') || msg.includes('cancelled')) {
@@ -224,8 +226,8 @@ export default function UploadPage() {
 
       setStep(5);
 
-      // Step 5: Confirm on-chain (via Magic Router, which settles ER → Devnet)
-      await erConnection.confirmTransaction(sig, 'confirmed');
+      // Step 5: Confirm on-chain via the regular devnet connection
+      await connection.confirmTransaction(sig, 'confirmed');
 
       // Register with backend
       // Backend persists cid+nonce so profile endpoint can find the matching proof account.
