@@ -1,7 +1,8 @@
 import { getPool } from "./db";
 
 // Table name for this project (private-fork; old 'proofs' table is left untouched)
-const TABLE = '"proofs-private"';
+// Use explicit public schema prefix — Supabase pooler may override search_path
+const TABLE = 'public."proofs-private"';
 
 interface ProofEntry {
   cid: string;
